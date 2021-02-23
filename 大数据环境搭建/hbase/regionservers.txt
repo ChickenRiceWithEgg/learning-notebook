@@ -1,0 +1,4 @@
+root@hadoop14:/usr/hbase-1.6.0/conf# cat regionservers
+hadoop14
+hadoop15
+hadoop16

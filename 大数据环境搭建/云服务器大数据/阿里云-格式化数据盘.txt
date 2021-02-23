@@ -1,0 +1,37 @@
+阿里云-格式化数据盘
+一、为数据盘创建MBR分区
+查看数据盘情况 
+fdisk -l  
+
+创建一个分区
+fdisk -u /dev/vdb  
+输入 p： 查看分区情况
+输入 n： 创建一个分区
+输入 p： 选择类型为主分区
+分区编号、第一个扇区编号、最后一个扇区编号：使用默认值，回车即可
+
+查看新分区信息
+fdisk -lu /dev/vdb
+
+
+二、为分区创建文件系统
+创建一个xfs文件系统
+mkfs -t xfs /dev/vdb1
+
+
+三、配置/etc/fstab文件并挂载分区
+备份/etv/fstab文件
+cp /etc/fstab /etc/fstab.bak
+
+在/etc/fstab文件中写入新分区信息
+echo `blkid /dev/vdb1 | awk '{print $2}' | sed 's/\"//g'` /mnt xfs defaults 0 0 >> /etc/fstab
+
+查看
+cat /etc/fstab
+
+挂载分区
+mount /dev/vdb1 /mnt
+
+
+四、查看结果
+df -h

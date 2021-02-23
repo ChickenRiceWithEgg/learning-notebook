@@ -1,0 +1,65 @@
+root@hadoop14:/usr/hbase-1.6.0/conf# cat hbase-site.xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+/**
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<configuration>
+<!-- 指定在hbase的数据在hdfs上的存储路径 -->
+<property>
+  <name>hbase.rootdir</name>
+  <value>hdfs://ns/hbase</value>
+</property>
+<!-- 指定hbase以集群模式启动 -->
+<property>
+  <name>hbase.cluster.distributed</name>
+  <value>true</value>
+</property>
+<!-- 指定zookeeper集群 -->
+<property>
+  <name>hbase.zookeeper.quorum</name>
+  <value>hadoop14,hadoop15,hadoop16</value>
+</property>
+<!-- 指定RegionServer的webUI的域名，不同RegionServer需不同 -->
+<property>
+  <name>hbase.regionserver.info.bindAddress</name>
+  <value>hadoop14</value>
+</property>
+<!-- 指定rpc超时时间，超时会抛出TimeoutException -->
+<property>
+  <name>hbase.rpc.timeout</name>
+  <value>180000</value>
+</property>
+<!-- 指定操作超时时间，在每个操作中，如果rpc请求由于超时或其他原因而失败，它将重试直到成功或抛出RetriesExhaustedException。但是，如果阻塞的总时间在重试用尽之前达到了操作超时，它将提前中断并抛出SocketTimeoutException -->
+<property>
+  <name>hbase.client.operation.timeout</name>
+  <value>180000</value>
+</property>
+<!-- 指定zookeeper中存放hbase的snapshot的目录，和zoo.cfg中的dataDir保持一致 -->
+<property>
+  <name>hbase.zookeeper.property.dataDir</name>
+  <value>/usr/zookeeper-3.6.2/zkData</value>
+</property>
+<!-- 分布式环境下必须指定此项为false，否则master无法正常启动 -->
+<property>
+  <name>hbase.unsafe.stream.capability.enforce</name>
+  <value>false</value>
+</property>
+</configuration>

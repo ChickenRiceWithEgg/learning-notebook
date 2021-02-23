@@ -1,0 +1,114 @@
+root@hadoop14:/usr/hadoop-2.10.1/etc/hadoop# cat hdfs-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<!-- 指定HDFS中副本数 -->
+<property>
+  <name>dfs.replication</name>
+  <value>3</value>
+</property>
+
+<!-- 指定HDFS对外暴露的服务名称 -->
+<property>
+  <name>dfs.nameservices</name>
+  <value>ns</value>
+</property>
+
+<!-- ��定HDFS高可用各NameNode的名称 -->
+<property>
+  <name>dfs.ha.namenodes.ns</name>
+  <value>nn1,nn2</value>
+</property>
+
+<!-- 指定各NameNode的RPC通信地址 -->
+<property>
+  <name>dfs.namenode.rpc-address.ns.nn1</name>
+  <value>hadoop14:9000</value>
+</property>
+<property>
+  <name>dfs.namenode.rpc-address.ns.nn2</name>
+  <value>hadoop15:9000</value>
+</property>
+
+<!-- 指定各NameNode的提供监控页面的通信地址 -->
+<property>
+  <name>dfs.namenode.http-address.ns.nn1</name>
+  <value>hadoop14:50070</value>
+</property>
+<property>
+  <name>dfs.namenode.http-address.ns.nn2</name>
+  <value>hadoop15:50070</value>
+</property>
+
+<!-- 指定各NameNode共享edits文件存储的位置（也就是JournalNode的位置） -->
+<property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://hadoop14:8485;hadoop15:8485;hadoop16:8485/ns</value>
+</property>
+
+<!-- 指定JournalNode存储数据的目录 -->
+<property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>/tmp/hadoop/journal</value>
+</property>
+
+<!-- 指定NameNode存储数据的目录 -->
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>/tmp/hadoop/name</value>
+</property>
+
+<!-- 指定DataNode存储数据的目录 -->
+<property>
+  <name>dfs.datanode.data.dir</name>
+  <value>/tmp/hadoop/data</value>
+</property>
+
+<!-- 指定提供故障转移的代理类 -->
+<property>
+  <name>dfs.client.failover.proxy.provider.ns</name>
+  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+
+<!-- 当发生failover时，Standby节点要把原来Active节点杀掉，这个过程叫做fence，通过以下配置指定把旧Active节点杀掉的方法，里面配置的方法会顺序执行，最后返回的结果就是fence过程的结果，如果fence执行成功，就把原来Standby的节点状态提升为Active。sshfence会通过ssh远程调用fuser命令去找到NameNode服务并杀死它。我们的目标是当发生failover时，不论如何，就���前面的sshfence执行失败（比如服务器上不存在fuser命令），依然把Standby节点的状态提升为Active，所以最后无论如何要配置一个shell(/bin/true)，保证不论前面的方法执行的情况如何，最后fence过程返回的结果都为true -->
+<property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>
+sshfence(root:45222)
+shell(/bin/true)
+ </value>
+</property>
+<!-- 指定ssh命令所需要的私钥 -->
+<property>
+  <name>dfs.ha.fencing.ssh.private-key-files</name>
+  <value>/root/.ssh/id_rsa</value>
+</property>
+
+<!-- 开启自动故障转移 -->
+<property>
+  <name>dfs.ha.automatic-failover.enabled</name>
+  <value>true</value>
+</property>
+
+<!-- 指定webui用户 -->
+<property>
+  <name>hadoop.http.staticuser.user</name>
+  <value>root</value>
+</property>
+</configuration>
